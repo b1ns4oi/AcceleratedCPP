@@ -1,5 +1,5 @@
 
-
+#include <memory>
 
 
 template <class T> class Vec {
@@ -48,13 +48,23 @@ public:
 	void push_back(const T& t) {
 		if(avail == limit) 
 			grow();
-		unchecked_append(val);
+		unchecked_append(t);
 	}
 
 private:
 	iterator data;
 	iterator avail;
 	iterator limit;	
+	
+	allocator<T> alloc;
+	void create();
+	void create(size_type, const T&);
+	void create(const_iterator, const_iterator);
+	
+	void uncreate();
+	
+	void grow();
+	void unchecked_append(const T&);
 };
 
 
