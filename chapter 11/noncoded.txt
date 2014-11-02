@@ -1,0 +1,15 @@
+
+
+11-1
+Because it has no memory that should be managed (i.e. no pointer members ).
+
+11-2
+Because Student_info class has already defined a constructor with a parameter, meaning the compiler will not generate a default constructor for it, but we want a default constructor(it's a good practice), so we should defined one ourselves.
+
+11-3
+Synthesized assignment operator will assign each data members according to their types: for class type member, it will call their own assignment operator; for built-in types, it will assign the member by value.(check page 201, 11.3.5 of <Accelerated C++>)
+So, the synthesized assignment operator of Student_info class will assign 'midterm' and 'final' member by value, call the assignment operator of 'n'(class "string") and 'homework'(class "vector<double>")
+
+11-4
+Synthesized destructor will call the destructors of member 'n' and 'homework'
+it will do nothing for 'midterm' and 'final' 

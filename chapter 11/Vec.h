@@ -1,5 +1,11 @@
+#ifndef VEC_H
+#define VEC_H
 
 #include <memory>
+#include <cstddef>
+#include <algorithm>
+
+using std::max;
 
 
 template <class T> class Vec {
@@ -51,12 +57,16 @@ public:
 		unchecked_append(t);
 	}
 
+	// 11-6
+	iterator erase(iterator it);
+	void clear();
+
 private:
 	iterator data;
 	iterator avail;
 	iterator limit;	
 	
-	allocator<T> alloc;
+	std::allocator<T> alloc;
 	void create();
 	void create(size_type, const T&);
 	void create(const_iterator, const_iterator);
@@ -67,7 +77,67 @@ private:
 	void unchecked_append(const T&);
 };
 
+template <class T> void Vec<T>::create() {
+	data = avail = limit = 0;
+}
 
+template <class T> void Vec<T>::create(size_type n, const T& v) {
+	data = alloc.allocate(n);
+	avail = limit = data + n;
+	uninitialized_fill(data, avail, v);
+}
+
+template <class T> void Vec<T>::create(const_iterator b, const_iterator e) {
+	data = alloc.allocate(e-b);
+	avail = limit = data + e - b;
+	uninitialized_copy(b, e, data);
+}
+
+template<class T> void Vec<T>::uncreate() {
+	if(data) {
+		for(iterator i = data; i != avail; ++i) {
+			alloc.destroy(i);
+		}
+		alloc.deallocate(data, limit - data);
+	}
+	data = avail = limit = 0;
+}
+
+template<class T> void Vec<T>::grow() {
+	int new_size = max(2*(limit-data), ptrdiff_t(1));   // 'ptrdiff_t' is from <cstddef>
+	iterator ptr_new = alloc.allocate(new_size);
+	iterator avail_new = std::uninitialized_copy(data, avail, ptr_new);
+	
+	// destroy the old memory
+	uncreate();
+	
+	// set the iterator variables
+	data = ptr_new;
+	avail = avail_new;
+	limit = data + new_size;
+}
+
+template<class T> void Vec<T>::unchecked_append(const T& v) {
+	alloc.construct(avail++, v);
+}
+
+// 11-6
+template<class T> 
+typename Vec<T>::iterator Vec<T>::erase(iterator it) {
+	if(it >= avail)
+		return it;
+	iterator ret = it;
+	for (++it; it != avail; ++it) 
+		*(it-1) = *it;
+	--avail;
+	return ret;
+}
+
+template<class T> void Vec<T>::clear() {
+	uncreate();
+}
+
+#endif
 
 
 
