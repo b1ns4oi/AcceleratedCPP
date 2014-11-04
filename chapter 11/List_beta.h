@@ -10,7 +10,16 @@ public:
 
 	List_beta() { from = to = NULL; }
 	explicit List_beta(size_type, const T& v = T());
+	List_beta(const_iterator iter1, const_iterator iter2);
 	
+	// copy constructor
+	List_beta(const List_beta& v) {
+		const_iterator iter1 = v.begin();
+		const_iterator iter2 = v.end();
+		from = to = create_list(iter1, iter2);
+		for(; iter1 != iter2; iter1 = iter1->next, to = to->next)		
+			;
+	}
 	
 	size_type size() {
 		int i = 0;
@@ -31,6 +40,7 @@ private:
 	
 	iterator create_node(const T&);
 	iterator create_list(size_type, const T&);
+	iterator create_list(const_iterator, const_iterator);
 };
 
 template <class T> List_beta<T>::List_beta(size_type n, const T& v)
@@ -38,6 +48,13 @@ template <class T> List_beta<T>::List_beta(size_type n, const T& v)
 	from = to = create_list(n, v);
 	for(int i = 0; i != n; ++i)
 		to = to->next;
+}
+
+template <class T> List_beta<T>::List_beta(const_iterator iter1, const_iterator iter2)
+{
+	from = to = create_list(iter1, iter2);
+	for(; iter1 != iter2; iter1 = iter1->next, to = to->next)		
+		;
 }
 
 template <class T> 
@@ -57,6 +74,15 @@ typename List_beta<T>::iterator List_beta<T>::create_list(size_type n, const T& 
 }
 
 
+template <class T> 
+typename List_beta<T>::iterator List_beta<T>::create_list(const_iterator iter1, const_iterator iter2)
+{
+	if(iter1 == iter2)
+		return NULL;
+	iterator ret = create_node(iter1->val);
+	ret->next = create_list(iter1->next, iter2);
+	return ret;
+}
 
 
 
