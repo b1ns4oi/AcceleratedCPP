@@ -1,6 +1,8 @@
 // 11-8
 
 #include "Node.h"
+#include <iostream>
+#include <ostream>
 
 template <class T> class List_beta {
 public:
@@ -21,6 +23,23 @@ public:
 			;
 	}
 	
+	// destructor
+	~List_beta() { uncreate(); }
+	
+	// assignment operator
+	List_beta& operator=(const List_beta& rhs) {
+		if(&rhs != this) {
+			uncreate();
+			// same as copy constructor
+			const_iterator iter1 = rhs.begin();
+			const_iterator iter2 = rhs.end();
+			from = to = create_list(iter1, iter2);
+			for(; iter1 != iter2; iter1 = iter1->next, to = to->next)		
+				;
+		}
+		return *this;
+	}
+	
 	size_type size() {
 		int i = 0;
 		for(iterator it = from; it != to; it = it->next, ++i)
@@ -38,6 +57,7 @@ private:
 	iterator from;
 	iterator to;
 	
+	void uncreate();
 	iterator create_node(const T&);
 	iterator create_list(size_type, const T&);
 	iterator create_list(const_iterator, const_iterator);
@@ -84,6 +104,24 @@ typename List_beta<T>::iterator List_beta<T>::create_list(const_iterator iter1, 
 	return ret;
 }
 
+template <class T> 
+void List_beta<T>::uncreate()
+{
+	iterator it = from;
+	for(; from != to; it = from) {
+		from = from->next;
+		delete it;
+	}
+	from = to = NULL;
+}
+
+template <class T>
+std::ostream& operator<<(std::ostream& os, const List_beta<T>& list) 
+{
+	for(typename List_beta<T>::const_iterator it = list.begin(); it != list.end(); it = it->next)
+		os << it->val << " ";
+	os << std::endl;
+}
 
 
 
