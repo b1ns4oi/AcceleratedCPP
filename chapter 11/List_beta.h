@@ -53,6 +53,11 @@ public:
 	const_iterator begin() const { return from; }
 	const_iterator end() const { return to; }
 
+	// modifiers
+	iterator insert(iterator pos, const T& val);
+
+	// iterator check 
+	bool iter_valid(const_iterator it);
 private:
 	iterator from;
 	iterator to;
@@ -121,7 +126,49 @@ std::ostream& operator<<(std::ostream& os, const List_beta<T>& list)
 	for(typename List_beta<T>::const_iterator it = list.begin(); it != list.end(); it = it->next)
 		os << it->val << " ";
 	os << std::endl;
+	return os;
 }
+
+template <class T>
+typename List_beta<T>::iterator List_beta<T>::insert(iterator pos, const T& val)
+{
+	iterator node = create_node(val);
+	node->next = pos;
+
+	if(pos == from) {
+		from = node;
+		return from;
+	}
+		
+	// else, there should be more than 1 element in the list before insert
+	// find the previous node
+	iterator prev = from;
+	for(; prev->next != pos; prev = prev->next)
+		;
+
+	prev->next = node;
+	return node;
+}
+
+template <class T>
+bool List_beta<T>::iter_valid(const_iterator it)
+{
+	for(iterator temp = from; temp != to; temp = temp->next)
+		if(temp == it)
+			return true;
+	return false;
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
