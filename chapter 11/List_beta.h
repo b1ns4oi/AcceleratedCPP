@@ -40,7 +40,7 @@ public:
 		return *this;
 	}
 	
-	size_type size() {
+	size_type size() const {
 		int i = 0;
 		for(iterator it = from; it != to; it = it->next, ++i)
 			;
@@ -54,10 +54,13 @@ public:
 	const_iterator end() const { return to; }
 
 	// modifiers
+	void push_back(const T& v);
 	iterator insert(iterator pos, const T& val);
-
+	iterator erase(iterator pos);
+	iterator erase(iterator it1, iterator it2);
+		
 	// iterator check 
-	bool iter_valid(const_iterator it);
+	bool iter_valid(const_iterator it) const;
 private:
 	iterator from;
 	iterator to;
@@ -129,29 +132,68 @@ std::ostream& operator<<(std::ostream& os, const List_beta<T>& list)
 	return os;
 }
 
+
 template <class T>
-typename List_beta<T>::iterator List_beta<T>::insert(iterator pos, const T& val)
+void List_beta<T>::push_back(const T& v)
 {
-	iterator node = create_node(val);
-	node->next = pos;
-
-	if(pos == from) {
+	iterator node = create_node(v);
+	node->next = to;
+	
+	if(this->size() == 0)
 		from = node;
-		return from;
+	else {
+		iterator last = from;
+		for(; last->next != to; last = last->next)
+			;
+		last->next = node;
 	}
-		
-	// else, there should be more than 1 element in the list before insert
-	// find the previous node
-	iterator prev = from;
-	for(; prev->next != pos; prev = prev->next)
-		;
-
-	prev->next = node;
-	return node;
 }
 
 template <class T>
-bool List_beta<T>::iter_valid(const_iterator it)
+typename List_beta<T>::iterator List_beta<T>::insert(iterator pos, const T& val)
+{
+	if (this->iter_valid(pos) || pos == to) {
+		iterator node = create_node(val);
+		node->next = pos;
+
+		if(pos == from) {
+			from = node;
+			return from;
+		}
+		// else, there should be more than 1 element in the list before insert
+		// find the previous node
+		iterator prev = from;
+		for(; prev->next != pos; prev = prev->next)
+			;
+		prev->next = node;
+		return node;
+	}
+	return NULL;
+}
+
+// if returns NULL, 'pos' either is a invalid iterator or points to the last element
+template <class T>
+typename List_beta<T>::iterator List_beta<T>::erase(iterator pos)
+{
+	if(!this->iter_valid(pos))
+		return NULL;
+	// 'pos' points to the first element
+	if(pos == from) {
+		from = from->next;
+		delete pos;
+		return from;
+	}
+	// else ...
+	iterator prev = from;
+	for(; prev->next != pos; prev = prev->next)
+		;
+	prev->next = pos->next;
+	delete pos;
+	return prev->next;
+}
+
+template <class T>
+bool List_beta<T>::iter_valid(const_iterator it) const
 {
 	for(iterator temp = from; temp != to; temp = temp->next)
 		if(temp == it)

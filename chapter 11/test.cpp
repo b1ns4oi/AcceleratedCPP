@@ -13,14 +13,17 @@ using std::string;
 int main()
 {
 	List_beta<string> list(10, "wuwuwu");
-	List_beta<string> list2(5, "hi");
-
-	List_beta<string>::iterator pos = list2.begin();
-
-	if (list.iter_valid(pos))
-		List_beta<string>::iterator ret = list.insert(pos, "binz");
-	else
-		cout << "invalid pos" << endl;
-
+	List_beta<string> list2;
+	list2.push_back("hi");
+	list2.push_back("binz");
+	
+	cout << list2 << endl;
+	
+	
+	List_beta<string>::iterator ret = list2.erase(NULL);
+	cout << list2 << endl;
+	
+	if(ret == NULL)
+		cout <<"ret is null" << endl;
 }
 
