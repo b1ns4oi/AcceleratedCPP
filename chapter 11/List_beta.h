@@ -150,6 +150,7 @@ typename List_beta<T>::iterator List_beta<T>::insert(iterator pos, const T& val)
 	return node;
 }
 
+// check if a iterator is in a valid range: [from, to)
 template <class T>
 bool List_beta<T>::iter_valid(const_iterator it)
 {
