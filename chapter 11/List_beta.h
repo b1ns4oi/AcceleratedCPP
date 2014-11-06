@@ -192,6 +192,19 @@ typename List_beta<T>::iterator List_beta<T>::erase(iterator pos)
 	return prev->next;
 }
 
+// erase elements between [it1, it2)
+template <class T>
+typename List_beta<T>::iterator List_beta<T>::erase(iterator it1, iterator it2)
+{
+	iterator ret = NULL;
+
+	for(iterator follow = it1; it1 != NULL && it1 != it2; it1 = follow) {
+		follow = it1->next;
+		ret = erase(it1);
+	}
+	return ret;
+}
+
 // check if a iterator is in a valid range: [from, to)
 template <class T>
 bool List_beta<T>::iter_valid(const_iterator it) const
