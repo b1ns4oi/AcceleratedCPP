@@ -1,3 +1,7 @@
+// compile the students' grading program using : g++ -o a test.cpp Core.cpp
+// you can also implement this program using 'Student_info' class, that way, you should 
+// #include "Student_info.h" and uncomment the codes in 'main()'
+
 #include <iostream>
 #include <string>
 #include <cstddef>
@@ -7,7 +11,10 @@
 #include <iomanip>
 #include <stdexcept>
 #include "Core.h"
-#include "Student_info.h"
+// #include "Student_info.h"
+// #include "Handle.h"
+//#include "Ref_handle.h"
+#include "Ptr.h"
 
 using std::vector;
 using std::cin; 
@@ -24,22 +31,53 @@ using std::domain_error;
 
 int main () 
 {
-    vector<Student_info> students;
-    Student_info record;
-    // char ch;
+    //// students' grading programm using 'Student_info' class
+    // vector<Student_info> students;
+    // Student_info record;
+    // // char ch;
+    // string::size_type maxlen = 0;
+
+    // while(record.read(cin)) {
+    //     maxlen = max(maxlen, record.name().size());
+    //     students.push_back(record);
+    // }
+
+    // sort(students.begin(), students.end(), Student_info::compare);
+
+    // for(vector<Student_info>::size_type i = 0; i != students.size(); ++i) {
+    //     cout << students[i].name() << string(maxlen + 1 - students[i].name().size(), ' ');
+    //     try {
+    //         double final_grade = students[i].grade();
+    //         streamsize prec = cout.precision();
+    //         cout << setprecision(3) << final_grade << setprecision(prec) << students[i].valid() << endl;
+    //     } catch (domain_error e) {
+    //         cout << e.what() << endl;
+    //     }
+    //     // delete students[i];
+    // }
+
+    // students' grading programm using 'Ptr' class
+    // you can use either 'Handle' or 'Ref_handle' class to replace 'Ptr'
+    vector<Ptr<Core> > students;
+    Ptr<Core> record;
+    char ch;
     string::size_type maxlen = 0;
 
-    while(record.read(cin)) {
-        maxlen = max(maxlen, record.name().size());
+    while(cin >> ch) {
+        if(ch == 'U')
+          record = new Core(cin);
+        else
+          record = new Grad(cin);
+        maxlen = max(maxlen, record->name().size());
         students.push_back(record);
     }
 
-    sort(students.begin(), students.end(), Student_info::compare);
+    sort(students.begin(), students.end(), compare_Core_handles);
 
-    for(vector<Student_info>::size_type i = 0; i != students.size(); ++i) {
-        cout << students[i].name() << string(maxlen + 1 - students[i].name().size(), ' ');
+    for(vector<Ptr<Core> >::size_type i = 0; i != students.size(); ++i) {
+        cout << students[i]->name() << string(maxlen + 1 - students[i]->name().size(), ' ');
         try {
-            double final_grade = students[i].grade();
+            double final_grade = students[i]->grade();
             streamsize prec = cout.precision();
             cout << setprecision(3) << final_grade << setprecision(prec) << endl;
         } catch (domain_error e) {
@@ -48,26 +86,6 @@ int main ()
         // delete students[i];
     }
 }
-
-
-
-
-// class Polygon {
-//   protected:
-//     int width, height;
-//   public:
-//     void set_values (int a, int b)
-//       { width=a; height=b; }
-//     virtual string area () { return "hi"; }
-// };
-
-// class Rectangle: public Polygon {
-//   public:
-//     void set_values (int a, int b)
-//       { width=a; height = a+b; }
-//     string area ()
-//       { return "widthheight"; }
-// };
 
 
 

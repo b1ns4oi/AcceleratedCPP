@@ -3,6 +3,7 @@
 
 #include <string>
 #include <istream>
+#include <iostream>
 #include <vector>
 #include <algorithm>
 #include "Core.h"
@@ -35,6 +36,11 @@ istream& Core::read(istream& in)
 	return in;
 }
 
+bool Core::valid() const
+{
+	return !homework.empty();
+}
+
 
 // non-class functions
 bool compare(const Core& c1, const Core& c2)
@@ -64,6 +70,7 @@ double grade(double midterm, double final, const std::vector<double>& hw)
 {
 	return 100;
 }
+
 
 
 // ============
