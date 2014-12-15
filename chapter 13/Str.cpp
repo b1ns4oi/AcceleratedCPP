@@ -1,4 +1,5 @@
 // 'Str' class implementation using the 'Ptr' class
+// compile this program with : g++ -o a Str.cpp Core.cpp
 
 #include "Ptr.h"
 #include <vector>
